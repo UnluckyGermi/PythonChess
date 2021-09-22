@@ -17,7 +17,9 @@ class Piece:
 
 
     def isTeam(piece, team):
-        if piece & team: return False
+        return piece & team > 7
+        
 
-        return True
+    def isType(piece, type):
+        return piece & type >= 7
 

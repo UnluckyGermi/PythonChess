@@ -125,6 +125,8 @@ class Interface:
 
 b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
+print(Piece.isType(9, Piece.KING))
+
 interface = Interface(b)
 interface(b)
 

@@ -20,8 +20,6 @@ class Move:
             if not Move.checkValidMove(move): break
             i += 1
 
-            if pieceTo != Piece.NONE:
-                if 
 
 
 

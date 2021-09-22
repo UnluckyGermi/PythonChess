@@ -1,6 +1,6 @@
 
 import plistlib
-import piece
+from piece import Piece
 
 
 class Board:
@@ -14,7 +14,7 @@ class Board:
         self.movesbeforedraw = 0
 
         self.enpassant = [-1, -1]
-        self.pieces = [['-']*8 for i in range(8)]
+        self.pieces = [[Piece.NONE]*8 for i in range(8)]
 
         self.inputFen(fen)
 
@@ -55,7 +55,12 @@ class Board:
                 pos = pos[0] + 1, 0
             
             else:
-                self.pieces[pos[0]][pos[1]] = c
+                
+                pieceTeam = Piece.BLACK
+                if c.isupper() : pieceTeam = Piece.WHITE
+
+                pieceType = Piece.pieceTypeFromChar[c.lower()]
+                self.pieces[pos[0]][pos[1]] = pieceType | pieceTeam
                 pos = pos[0], pos[1] + 1
 
 

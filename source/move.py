@@ -2,32 +2,27 @@
 
 class Move:
 
-
     def checkValidMove(move):
         if move.squareto[0] > 7 or move.squareto[1] > 7 or move.squareto[0] < 0 or move.squareto[1] < 0: return False
         return True
 
-    def diagonalMoves(squarefrom):
+
+    """def slidingMove(squarefrom, dir, board):
         moves = []
+        i = 0
 
-        for i in [-1, 1]:
-            for j in [-1, 1]:
-                to = squarefrom[0] + i, squarefrom[1] + j
-                moves.append(Move(squarefrom, to))
-        
-        return moves
+        while True:
+            to = squarefrom[0] + dir[0], squarefrom[1] + dir[1]
+            move = Move(squarefrom, to)
 
-    def linearMoves(squarefrom): 
-        moves = []
+            if not Move.checkValidMove(move): break
+            i += 1
 
-        for i in [-1, 0, 1]:
-            for j in [-1, 0, 1]:
-                if abs(i) == abs(j): continue
+            if(board.pieces[to] != '-'):
+                pass
 
-                to = squarefrom[0] + i, squarefrom[1] + j
-                moves.append(Move(squarefrom, to))
 
-        return moves
+"""
 
     def knightMoves(squarefrom):
         moves = []
@@ -43,7 +38,17 @@ class Move:
         return moves
 
     def kingMoves(squarefrom):
-        return Move.diagonalMoves(squarefrom) + Move.linearMoves(squarefrom)
+        moves = []
+
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                if i == 0 and j == 0: continue
+
+                to = squarefrom[0] + i, squarefrom[1] + j
+                move = Move(squarefrom, to)
+                if Move.checkValidMove(move) : moves.append(move)
+
+        return moves
 
 
 

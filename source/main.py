@@ -1,3 +1,4 @@
+from pygame.color import Color
 from board import Board
 from move import Move
 from piece import Piece
@@ -37,6 +38,7 @@ class Interface:
         game.display.set_icon(self.ICON)
         game.display.set_caption("Ajedrez")
         
+        self.moves = []
         self.selectedSquare = None
         self.selectedpiece = Piece.NONE
         self.sprites = [None] * 12
@@ -58,30 +60,27 @@ class Interface:
                 elif event.type == game.MOUSEBUTTONDOWN:
                     pos = self.getPos(game.mouse.get_pos())
                     if event.button == 1:
-                        if board.pieces[pos[0]][pos[1]] != Piece.NONE:
+                        piece = board.pieces[pos[0]][pos[1]]
+                        if piece != Piece.NONE:
                             self.selectedpiece = pos
+                            if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
+                                for move in Move.generateLegalMoves(self.selectedpiece, board):
+                                    self.moves.append(move)
+
                     elif event.button == 3:
                         if self.selectedSquare == pos : self.selectedSquare = None
                         else: self.selectedSquare = pos
                     
                 elif event.type == game.MOUSEBUTTONUP and event.button == 1 and self.selectedpiece != None:
-                    pos = self.getPos(game.mouse.get_pos())
+                    if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
+                        pos = self.getPos(game.mouse.get_pos())
+                        for move in self.moves:
+                            if move.squareto == pos:
+                                board.makeMove(move)
+                        
 
-                    for move in Move.generateMoves(self.selectedpiece, board):
-                        print(move.squareto)
-                        if move.squareto != pos : continue
-
-                        board.pieces[pos[0]][pos[1]] = board.pieces[self.selectedpiece[0]][self.selectedpiece[1]]
-                        board.pieces[self.selectedpiece[0]][self.selectedpiece[1]] = Piece.NONE
-                        break
-
-
-                    
                     self.selectedpiece = None
-
-
-                    
-            
+                    self.moves = []
 
             game.display.flip()
             
@@ -120,11 +119,18 @@ class Interface:
 
                 if (i,j) == self.selectedSquare : game.draw.rect(self.surface, game.Color(255,255,255,a=10), rect)
 
+                for move in self.moves:
+                    if move.squareto == square:
+                        s = game.Surface((self.squaresize, self.squaresize))
+                        s.set_alpha(70)
+                        s.fill((255, 123, 123))
+                        self.surface.blit(s, pos)
+                        
         self.drawPieces(board)
 
                 
 
-b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+b = Board.fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
 interface = Interface(b)
 interface(b)

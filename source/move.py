@@ -11,8 +11,6 @@ class Move:
         piecefrom = board.pieces[move.squarefrom[0]][move.squarefrom[1]]
         pieceto = board.pieces[move.squareto[0]][move.squareto[1]]
 
-        
-
         if pieceto != Piece.NONE:
             if Piece.isTeam(piecefrom, Piece.getTeam(pieceto)): return 1
             return 2
@@ -53,7 +51,7 @@ class Move:
         moves = []
         for dir1 in [-1, 0, 1]:
             for dir2 in [-1, 0, 1]:
-                if abs(dir1) == abs(dir2): break
+                if abs(dir1) == abs(dir2): continue
                 moves += Move.slidingMove(squarefrom, (dir1, dir2), board)
         return moves
 
@@ -81,6 +79,40 @@ class Move:
                 move = Move(squarefrom, to)
                 if Move.checkValidMove(move, board) > 1: moves.append(move)
 
+        team = Piece.getTeam(board.pieces[squarefrom[0]][squarefrom[1]])
+        
+        # White castle.
+        if team == Piece.WHITE:
+            # Short castle
+            if board.whitecastleright[0]:
+                if board.pieces[squarefrom[0]][squarefrom[1]+1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]+2] == Piece.NONE:
+                    to = squarefrom[0], squarefrom[1] + 2
+                    move = Move(squarefrom, to)
+                    move.castle = True
+                    moves.append(move)
+            # Long castle
+            if board.whitecastleright[1]:
+                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
+                    to = squarefrom[0], squarefrom[1] - 2
+                    move = Move(squarefrom, to)
+                    move.castle = True
+                    moves.append(move)
+        else:
+            # Short castle
+            if board.blackcastleright[0]:
+                if board.pieces[squarefrom[0]][squarefrom[1]+1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]+2] == Piece.NONE:
+                    to = squarefrom[0], squarefrom[1] + 2
+                    move = Move(squarefrom, to)
+                    move.castle = True
+                    moves.append(move)
+            # Long castle
+            if board.whitecastleright[1]:
+                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
+                    to = squarefrom[0], squarefrom[1] - 2
+                    move = Move(squarefrom, to)
+                    move.castle = True
+                    moves.append(move)
+
         return moves
 
     def queenMoves(squarefrom, board):
@@ -106,18 +138,32 @@ class Move:
         if to[0] < 8 and to[0] >= 0 and to[1] < 8 and to[1] >= 0:
             pieceto = board.pieces[to[0]][to[1]]
             if pieceto == Piece.NONE: moves.append(Move(squarefrom, to))
+        
+        #Forward move 2.
+        if dir == 1 and squarefrom[0] == 1 or dir == -1 and squarefrom[0] == 6:
+            to = squarefrom[0] + dir*2, squarefrom[1]
+            if to[0] < 8 and to[0] >= 0 and to[1] < 8 and to[1] >= 0:
+                pieceto = board.pieces[to[0]][to[1]]
+                piecebefore = board.pieces[to[0]-dir][to[1]]
+                if pieceto == Piece.NONE and piecebefore == Piece.NONE:
+                    move = Move(squarefrom, to)
+                    move.pawnmovedtwo = to[0]-dir, to[1]
+                    moves.append(move)
+                    
 
-        # Capture move 1.
-        cap1 = squarefrom[0] + dir, squarefrom[1] + 1
-        if cap1[0] < 8 and cap1[0] >= 0 and cap1[1] < 8 and cap1[1] >= 0:
-            piececap1 = board.pieces[cap1[0]][cap1[1]]
-            if piececap1 != Piece.NONE and not Piece.isTeam(piececap1, Piece.getTeam(piece)): moves.append(Move(squarefrom, cap1))
 
-        # Capture move 2.
-        cap2 = squarefrom[0] + dir, squarefrom[1] - 1
-        if cap2[0] < 8 and cap2[0] >= 0 and cap2[1] < 8 and cap2[1] >= 0:
-            piececap2 = board.pieces[cap2[0]][cap2[1]]
-            if piececap2 != Piece.NONE and not Piece.isTeam(piececap2, Piece.getTeam(piece)): moves.append(Move(squarefrom, cap2))
+        # Capture moves.
+        for i in [-1, 1]:
+            cap = squarefrom[0] + dir, squarefrom[1] + i
+            if cap[0] < 8 and cap[0] >= 0 and cap[1] < 8 and cap[1] >= 0:
+                piececap2 = board.pieces[cap[0]][cap[1]]
+                if piececap2 != Piece.NONE and not Piece.isTeam(piececap2, Piece.getTeam(piece)): moves.append(Move(squarefrom, cap))
+                elif board.enpassant != None and board.enpassant == cap:
+                    move = Move(squarefrom, cap)
+                    move.enpassant = True
+                    moves.append(move)
+
+        
 
         return moves
 
@@ -131,9 +177,38 @@ class Move:
         elif Piece.isType(piece, Piece.ROOK): return Move.rookMoves(squarefrom, board)
         elif Piece.isType(piece, Piece.QUEEN): return Move.queenMoves(squarefrom, board)
         elif Piece.isType(piece, Piece.PAWN): return Move.pawnMoves(squarefrom, board)
+    
+    def generateLegalMoves(squarefrom, board):
+        moves = []
+        for move in Move.generateMoves(squarefrom, board):
+            if move.isLegal(board): moves.append(move)
+
+        return moves
+
+
+    def isLegal(self, board):
+        piece = board.pieces[self.squarefrom[0]][self.squarefrom[1]]
+        team = Piece.getTeam(piece)
+        newboard = board.newBoardAfterMove(self)
+        if newboard.inCheck(team):
+            return False
+
+        return True
+        
+    def allMovesForTeam(team, board):
+        moves = []
+        for i in range(8):
+            for j in range(8):
+                piece = board.pieces[i][j]
+                if piece != Piece.NONE and Piece.isTeam(piece, team): moves += Move.generateMoves((i,j), board)
+
+        return moves
 
     def __init__(self, squarefrom, squareto):
         self.squarefrom = squarefrom
         self.squareto = squareto
+        self.castle = False
+        self.pawnmovedtwo = None
+        self.enpassant = False
 
     

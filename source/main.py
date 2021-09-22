@@ -125,10 +125,6 @@ class Interface:
 
 b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
-for i in range(8):
-    for j in range(8):
-        print(b.pieces)
-    print()
 interface = Interface(b)
 interface(b)
 

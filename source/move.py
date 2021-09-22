@@ -1,4 +1,4 @@
-
+from piece import Piece
 
 class Move:
 
@@ -7,22 +7,25 @@ class Move:
         return True
 
 
-    """def slidingMove(squarefrom, dir, board):
+    def slidingMove(squarefrom, dir, board):
         moves = []
         i = 0
 
         while True:
             to = squarefrom[0] + dir[0], squarefrom[1] + dir[1]
             move = Move(squarefrom, to)
+            pieceFrom = board.pieces[squarefrom[0]][squarefrom[1]]
+            pieceTo = board.pieces[to[0]][to[1]]
 
             if not Move.checkValidMove(move): break
             i += 1
 
-            if(board.pieces[to] != '-'):
-                pass
+            if pieceTo != Piece.NONE:
+                if 
 
 
-"""
+
+
 
     def knightMoves(squarefrom):
         moves = []

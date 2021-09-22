@@ -16,9 +16,8 @@ class Piece:
     pieceTypeFromChar = {'k' : KING, 'q': QUEEN, 'b': BISHOP, 'n': KNIGHT, 'r': ROOK, 'p': PAWN}
 
 
+    def isTeam(piece, team):
+        if piece & team: return False
 
+        return True
 
-    def __init__(self, type, team):
-        self.type = type
-        self.team = team
-        

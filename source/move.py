@@ -53,7 +53,7 @@ class Move:
         moves = []
         for dir1 in [-1, 0, 1]:
             for dir2 in [-1, 0, 1]:
-                if abs(dir1) == abs(dir2): break
+                if abs(dir1) == abs(dir2): continue
                 moves += Move.slidingMove(squarefrom, (dir1, dir2), board)
         return moves
 

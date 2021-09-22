@@ -40,7 +40,7 @@ class Interface:
         self.selectedSquare = None
         self.selectedpiece = Piece.NONE
         self.sprites = [None] * 12
-        self.squaresize = 100
+        self.squaresize = 80
         self.surface = game.display.set_mode((self.squaresize*8, self.squaresize*8), vsync=1)
         self.loadSprites()
         
@@ -68,7 +68,6 @@ class Interface:
                     pos = self.getPos(game.mouse.get_pos())
 
                     for move in Move.generateMoves(self.selectedpiece, board):
-                        print(move.squareto)
                         if move.squareto != pos : continue
 
                         board.pieces[pos[0]][pos[1]] = board.pieces[self.selectedpiece[0]][self.selectedpiece[1]]

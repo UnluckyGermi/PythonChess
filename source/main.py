@@ -67,7 +67,8 @@ class Interface:
                 elif event.type == game.MOUSEBUTTONUP and event.button == 1 and self.selectedpiece != None:
                     pos = self.getPos(game.mouse.get_pos())
 
-                    for move in Move.kingMoves(self.selectedpiece):
+                    for move in Move.generateMoves(self.selectedpiece, board):
+                        print(move.squareto)
                         if move.squareto != pos : continue
 
                         board.pieces[pos[0]][pos[1]] = board.pieces[self.selectedpiece[0]][self.selectedpiece[1]]
@@ -124,8 +125,6 @@ class Interface:
                 
 
 b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-
-print(Piece.isType(9, Piece.KING))
 
 interface = Interface(b)
 interface(b)

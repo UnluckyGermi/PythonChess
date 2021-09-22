@@ -19,7 +19,9 @@ class Piece:
     def isTeam(piece, team):
         return piece & team > 7
         
-
     def isType(piece, type):
-        return piece & type >= 7
+        return piece - Piece.getTeam(piece) == type
 
+    def getTeam(piece):
+        if Piece.isTeam(piece, Piece.WHITE): return Piece.WHITE
+        return Piece.BLACK

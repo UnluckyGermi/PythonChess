@@ -19,7 +19,5 @@ def generateMoves(depth, board):
 
     return counter
 
-print(generateMoves(5, b))
-
 interface = Interface(b)
 interface(b)

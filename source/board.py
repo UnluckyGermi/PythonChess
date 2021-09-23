@@ -127,7 +127,7 @@ class Board:
         # Enpassant
         if move.enpassant:
             dir = move.squareto[0] - move.squarefrom[0]
-            if dir < 0: self.pieces[move.squareto[0]-dir][move.squareto[1]] = Piece.NONE
+            self.pieces[move.squareto[0]-dir][move.squareto[1]] = Piece.NONE
 
         
         # Castle.

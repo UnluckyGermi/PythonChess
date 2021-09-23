@@ -84,14 +84,14 @@ class Move:
         # White castle.
         if team == Piece.WHITE:
             # Short castle
-            if board.whitecastleright[0]:
+            if board.whitecastleright[0] and squarefrom[1] + 2 < 8:
                 if board.pieces[squarefrom[0]][squarefrom[1]+1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]+2] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] + 2
                     move = Move(squarefrom, to)
                     move.castle = True
                     moves.append(move)
             # Long castle
-            if board.whitecastleright[1]:
+            if board.whitecastleright[1] and squarefrom[1] - 2 > 0:
                 if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] - 2
                     move = Move(squarefrom, to)
@@ -99,14 +99,14 @@ class Move:
                     moves.append(move)
         else:
             # Short castle
-            if board.blackcastleright[0]:
+            if board.blackcastleright[0] and squarefrom[1] + 2 < 8:
                 if board.pieces[squarefrom[0]][squarefrom[1]+1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]+2] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] + 2
                     move = Move(squarefrom, to)
                     move.castle = True
                     moves.append(move)
             # Long castle
-            if board.blackcastleright[1]:
+            if board.blackcastleright[1] and squarefrom[1] - 2 > 0:
                 if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] - 2
                     move = Move(squarefrom, to)

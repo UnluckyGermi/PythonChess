@@ -12,7 +12,7 @@ from pygame.constants import FULLSCREEN
 
 class Interface:
 
-    STANDARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    
 
     SPRITE_FROM_PIECE = {
                         Piece.KING | Piece.WHITE : 0,

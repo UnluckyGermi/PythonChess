@@ -44,7 +44,7 @@ class Interface:
         self.selectedSquare = None
         self.selectedpiece = Piece.NONE
         self.sprites = [None] * 12
-        self.squaresize = 100
+        self.squaresize = 80
         self.surface = game.display.set_mode((self.squaresize*8, self.squaresize*8), vsync=1)
         self.loadSprites()
         
@@ -68,6 +68,7 @@ class Interface:
                             if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
                                 for move in Move.generateLegalMoves(self.selectedpiece, board):
                                     self.moves.append(move)
+                                    
 
                     elif event.button == 3:
                         if self.selectedSquare == pos : self.selectedSquare = None
@@ -129,9 +130,5 @@ class Interface:
                         self.surface.blit(s, pos)
 
         self.drawPieces(board)
-
-print("ji")
-
-
 
 

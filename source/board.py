@@ -105,6 +105,9 @@ class Board:
                 pieceType = Piece.pieceTypeFromChar[c.lower()]
                 board.pieces[pos[0]][pos[1]] = pieceType | pieceTeam
                 pos = pos[0], pos[1] + 1
+            
+            
+        board.checkCastles()
 
         return board
 
@@ -119,6 +122,7 @@ class Board:
         if Piece.isType(piece, Piece.KING):
             if Piece.isTeam(piece, Piece.WHITE): self.whitecastleright = [False, False]
             else: self.blackcastleright = [False, False]
+
 
         # Enpassant
         if move.enpassant:
@@ -149,18 +153,23 @@ class Board:
         self.pieces[move.squareto[0]][move.squareto[1]] = self.pieces[move.squarefrom[0]][move.squarefrom[1]]
         self.pieces[move.squarefrom[0]][move.squarefrom[1]] = Piece.NONE
 
-        if self.pieces[7][7] != Piece.ROOK | Piece.WHITE: self.whitecastleright[0] = False
-        if self.pieces[7][0] != Piece.ROOK | Piece.WHITE: self.whitecastleright[1] = False
-        if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
-        if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
+        # Promotion
+        if move.promotion != Piece.NONE:
+            self.pieces[move.squareto[0]][move.squareto[1]] = move.promotion | Piece.getTeam(piece)
+
+        self.checkCastles()
 
         
         self.nextTurn()
 
 
         
+    def checkCastles(self):
 
-        
+        if self.pieces[7][7] != Piece.ROOK | Piece.WHITE: self.whitecastleright[0] = False
+        if self.pieces[7][0] != Piece.ROOK | Piece.WHITE: self.whitecastleright[1] = False
+        if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
+        if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
 
                 
                 

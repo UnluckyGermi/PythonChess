@@ -163,6 +163,18 @@ class Move:
                     move.enpassant = True
                     moves.append(move)
 
+        # Promotion
+        for move in moves:
+            if move.squareto[0] == 0 and dir == -1:
+                move.promotion = Piece.QUEEN
+                moven = Move(move.squarefrom, move.squareto)
+                moven.promotion = Piece.KNIGHT
+                moveb = Move(move.squarefrom, move.squareto)
+                moveb.promotion = Piece.BISHOP
+                mover = Move(move.squarefrom, move.squareto)
+                mover.promotion = Piece.ROOK
+
+            elif move.squareto[0] == 7 and dir == 1: move.promotion = True
         
 
         return moves
@@ -197,7 +209,6 @@ class Move:
             move = Move(self.squarefrom, (self.squareto[0], int((self.squareto[1] + self.squarefrom[1]) / 2)))
             newboard1 = board.newBoardAfterMove(move)
             if newboard1.inCheck(team):
-                print("|||||||||||||")
                 return False
 
         if newboard.inCheck(team):
@@ -228,5 +239,6 @@ class Move:
         self.castle = False
         self.pawnmovedtwo = None
         self.enpassant = False
+        self.promotion = Piece.NONE
 
     

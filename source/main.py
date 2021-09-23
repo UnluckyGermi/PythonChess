@@ -2,10 +2,7 @@ from interface import Interface
 from board import Board
 from move import Move
 
-
-
-b = Board.fromFen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -")
-
+b = Board.fromFen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/RPPBBPPR/4K3 w KQkq -")
 
 def generateMoves(depth, board):
     
@@ -15,12 +12,11 @@ def generateMoves(depth, board):
 
     for move in Move.allLegalMovesForTeam(board.turn, board):
         newboard = board.newBoardAfterMove(move)
-        counter += generateMoves(depth - 1, newboard, castles)
-        if move.castle: castles = castles+1
+        counter += generateMoves(depth - 1, newboard)
 
     return counter
 
-print(generateMoves(3, b))
+#print(generateMoves(3, b))
 
 interface = Interface(b)
 interface(b)

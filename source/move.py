@@ -190,6 +190,12 @@ class Move:
         piece = board.pieces[self.squarefrom[0]][self.squarefrom[1]]
         team = Piece.getTeam(piece)
         newboard = board.newBoardAfterMove(self)
+
+        if self.castle:
+            move = Move(self.squarefrom, (self.squareto[0], int((self.squareto[1] + self.squarefrom[1]) / 2)))
+            newboard1 = board.newBoardAfterMove(move)
+            if newboard1.inCheck(team) : return False
+
         if newboard.inCheck(team):
             return False
 
@@ -201,6 +207,14 @@ class Move:
             for j in range(8):
                 piece = board.pieces[i][j]
                 if piece != Piece.NONE and Piece.isTeam(piece, team): moves += Move.generateMoves((i,j), board)
+
+        return moves
+
+    def allLegalMovesForTeam(team, board):
+        moves = []
+
+        for move in Move.allMovesForTeam(team, board):
+            if move.isLegal(board): moves.append(move)
 
         return moves
 

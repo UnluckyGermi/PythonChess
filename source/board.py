@@ -112,7 +112,6 @@ class Board:
     def makeMove(self, move):
 
         self.enpassant = None
-
         piece = self.pieces[move.squarefrom[0]][move.squarefrom[1]]
         if Piece.isType(piece, Piece.KING):
             if Piece.isTeam(piece, Piece.WHITE): self.whitecastleright = [False, False]

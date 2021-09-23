@@ -106,7 +106,7 @@ class Move:
                     move.castle = True
                     moves.append(move)
             # Long castle
-            if board.whitecastleright[1]:
+            if board.blackcastleright[1]:
                 if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] - 2
                     move = Move(squarefrom, to)
@@ -192,9 +192,13 @@ class Move:
         newboard = board.newBoardAfterMove(self)
 
         if self.castle:
+
+            if board.inCheck(team): return False
             move = Move(self.squarefrom, (self.squareto[0], int((self.squareto[1] + self.squarefrom[1]) / 2)))
             newboard1 = board.newBoardAfterMove(move)
-            if newboard1.inCheck(team) : return False
+            if newboard1.inCheck(team):
+                print("|||||||||||||")
+                return False
 
         if newboard.inCheck(team):
             return False

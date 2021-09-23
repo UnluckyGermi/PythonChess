@@ -76,6 +76,9 @@ class Board:
                 if c == 'b': board.turn = Piece.BLACK
             elif phase == 2:
 
+                if c == '-':
+                    board.whitecastleright = [False, False]
+                    board.blackcastleright = [False, False]
                 if c == 'K': board.whitecastleright[0] = True
                 elif c == 'Q': board.whitecastleright[1] = True
                 elif c == 'k': board.blackcastleright[0] = True
@@ -151,6 +154,7 @@ class Board:
         if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
         if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
 
+        
         self.nextTurn()
 
 

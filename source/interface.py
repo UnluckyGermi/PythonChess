@@ -9,10 +9,7 @@ import sys
 from pygame.constants import FULLSCREEN
 
 
-
 class Interface:
-
-    
 
     SPRITE_FROM_PIECE = {
                         Piece.KING | Piece.WHITE : 0,
@@ -37,11 +34,16 @@ class Interface:
 
         self.ICON = game.transform.smoothscale(game.image.load("assets/icon.ico"), (32, 32))
         game.init()
+        game.mixer.init()
         game.display.set_icon(self.ICON)
         game.display.set_caption("Ajedrez")
+
+        self.move_sound = game.mixer.Sound("assets/sounds/piece_move.wav")
+        self.check_sound = game.mixer.Sound("assets/sounds/piece_check.wav")
         
         self.moves = []
-        self.selectedSquare = None
+        self.arrow = []
+        self.arrowinit = None
         self.selectedpiece = Piece.NONE
         self.sprites = [None] * 12
         self.squaresize = 80
@@ -61,29 +63,42 @@ class Interface:
                 if event.type == game.QUIT: sys.exit()
                 elif event.type == game.MOUSEBUTTONDOWN:
                     pos = self.getPos(game.mouse.get_pos())
+
                     if event.button == 1:
+                        self.arrow = []
                         piece = board.pieces[pos[0]][pos[1]]
                         if piece != Piece.NONE:
                             self.selectedpiece = pos
                             if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
                                 for move in Move.generateLegalMoves(self.selectedpiece, board):
                                     self.moves.append(move)
+
                                     
 
                     elif event.button == 3:
-                        if self.selectedSquare == pos : self.selectedSquare = None
-                        else: self.selectedSquare = pos
+                        self.arrowinit = pos
                     
-                elif event.type == game.MOUSEBUTTONUP and event.button == 1 and self.selectedpiece != None:
-                    if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
-                        pos = self.getPos(game.mouse.get_pos())
-                        for move in self.moves:
-                            if move.squareto == pos:
-                                board.makeMove(move)
-                        
+                elif event.type == game.MOUSEBUTTONUP:
+                    pos = self.getPos(game.mouse.get_pos())
+                    if event.button == 1 and self.selectedpiece != None:
+                        if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
+                            
+                            for move in self.moves:
+                                if move.squareto == pos:
+                                    board.makeMove(move)
+                                    
+                                    if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
+                                    else: game.mixer.Sound.play(self.move_sound)
+                    
+                    elif event.button == 3 and self.arrowinit != None:
+                        self.arrow.append((self.arrowinit, pos))
 
                     self.selectedpiece = None
                     self.moves = []
+
+                    
+
+
 
             game.display.flip()
             
@@ -107,6 +122,9 @@ class Interface:
 
     
     def drawBoard(self, board):
+
+        
+
         for i in range(8):
             for j in range(8):
                 square = i,j
@@ -120,8 +138,6 @@ class Interface:
                 game.draw.rect(self.surface, color, rect)
 
 
-                if (i,j) == self.selectedSquare : game.draw.rect(self.surface, game.Color(255,255,255,a=10), rect)
-
                 for move in self.moves:
                     if move.squareto == square:
                         s = game.Surface((self.squaresize, self.squaresize))
@@ -129,6 +145,25 @@ class Interface:
                         s.fill((255, 123, 123))
                         self.surface.blit(s, pos)
 
-        self.drawPieces(board)
+        
 
+        for arr in self.arrow:
+            start = arr[0]
+            end = arr[1]
+
+            if(start == end): continue
+
+            startpos = self.squaresize*start[1] + self.squaresize/2, self.squaresize*start[0] + self.squaresize/2
+            endpos = self.squaresize*end[1] + self.squaresize/2, self.squaresize*end[0] + self.squaresize/2
+
+            dir = end[0] - start[0], end[1] - start[1]
+            oppdir = dir[1], -dir[0]
+
+            
+            game.draw.circle(self.surface, (0,0,0), startpos, 5)
+            game.draw.line(self.surface, (0,0,0), startpos, endpos, width=10)
+            #game.draw.polygon(self.surface, (0,0,0), ((endpos[0] + oppdir[0], endpos[1] + oppdir[1]*100), (endpos[0] - oppdir[0], endpos[1] - oppdir[1]*100), (endpos[0] + dir[0]*100, endpos[1] + dir[1]*100)))
+            #game.draw.polygon(self.surface, (0, 0, 0), ((start), (startpos[0] + 10*dir[0], startpos[1] - 10*dir[1]), (endpos), (endpos[0] + 10*dir[0], endpos[1] - 10*dir[1])))
+            
+        self.drawPieces(board)
 

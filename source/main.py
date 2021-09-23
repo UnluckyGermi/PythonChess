@@ -3,8 +3,9 @@ from board import Board
 from move import Move
 
 STANDARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+TEST_FEN = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
 
-b = Board.fromFen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -")
+b = Board.fromFen(TEST_FEN)
 
 def generateMoves(depth, board):
     
@@ -18,7 +19,7 @@ def generateMoves(depth, board):
 
     return counter
 
-print(generateMoves(3, b))
+#print(generateMoves(3, b))
 
 interface = Interface(b)
 interface(b)

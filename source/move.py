@@ -166,15 +166,22 @@ class Move:
         # Promotion
         for move in moves:
             if move.squareto[0] == 0 and dir == -1:
-                move.promotion = Piece.QUEEN
+                move.promotion = Piece.QUEEN | Piece.WHITE
                 moven = Move(move.squarefrom, move.squareto)
-                moven.promotion = Piece.KNIGHT
+                moven.promotion = Piece.KNIGHT | Piece.WHITE
                 moveb = Move(move.squarefrom, move.squareto)
-                moveb.promotion = Piece.BISHOP
+                moveb.promotion = Piece.BISHOP | Piece.WHITE
                 mover = Move(move.squarefrom, move.squareto)
-                mover.promotion = Piece.ROOK
+                mover.promotion = Piece.ROOK | Piece.WHITE
 
-            elif move.squareto[0] == 7 and dir == 1: move.promotion = True
+            elif move.squareto[0] == 7 and dir == 1:
+                move.promotion = Piece.QUEEN | Piece.BLACK
+                moven = Move(move.squarefrom, move.squareto)
+                moven.promotion = Piece.KNIGHT | Piece.BLACK
+                moveb = Move(move.squarefrom, move.squareto)
+                moveb.promotion = Piece.BISHOP | Piece.BLACK
+                mover = Move(move.squarefrom, move.squareto)
+                mover.promotion = Piece.ROOK | Piece.BLACK
         
 
         return moves
@@ -241,4 +248,5 @@ class Move:
         self.enpassant = False
         self.promotion = Piece.NONE
 
+    
     

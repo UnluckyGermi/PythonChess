@@ -18,6 +18,12 @@ class Board:
         self.enpassant = None
         self.pieces = [[Piece.NONE]*8 for i in range(8)]
 
+        # 0 - Game on.
+        # 1 - Draw.
+        # 2 - White wins.
+        # 3 - Black wins.
+        self.gamestate = 0
+
     def fromBoard(board):
         newboard = Board()
         newboard.turn = board.turn
@@ -111,6 +117,20 @@ class Board:
 
         return board
 
+    # TODO
+    def gameOver(self):
+        pass
+
+    def squareName(square):
+        squarefile = square[1]
+        squarerank = square[0]
+
+        rank = str(8 - squarerank)
+        file = str(chr(ord('a') + squarefile))
+
+        return file + rank
+
+
     def nextTurn(self):
         if self.turn == Piece.WHITE: self.turn = Piece.BLACK
         else: self.turn = Piece.WHITE
@@ -155,6 +175,7 @@ class Board:
 
         # Promotion
         if move.promotion != Piece.NONE:
+            print(move.promotion)
             self.pieces[move.squareto[0]][move.squareto[1]] = move.promotion | Piece.getTeam(piece)
 
         self.checkCastles()

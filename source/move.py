@@ -240,6 +240,19 @@ class Move:
 
         return moves
 
+    def squareName(square):
+        squarefile = square[1]
+        squarerank = square[0]
+
+        rank = str(8 - squarerank)
+        file = str(chr(ord('a') + squarefile))
+
+        return file + rank
+
+    def toString(self):
+        return Move.squareName(self.squarefrom) + Move.squareName(self.squareto)
+        
+
     def __init__(self, squarefrom, squareto):
         self.squarefrom = squarefrom
         self.squareto = squareto

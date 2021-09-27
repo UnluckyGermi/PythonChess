@@ -121,14 +121,7 @@ class Board:
     def gameOver(self):
         pass
 
-    def squareName(square):
-        squarefile = square[1]
-        squarerank = square[0]
-
-        rank = str(8 - squarerank)
-        file = str(chr(ord('a') + squarefile))
-
-        return file + rank
+    
 
 
     def nextTurn(self):

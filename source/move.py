@@ -91,8 +91,8 @@ class Move:
                     move.castle = True
                     moves.append(move)
             # Long castle
-            if board.whitecastleright[1] and squarefrom[1] - 2 > 0:
-                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
+            if board.whitecastleright[1] and squarefrom[1] - 3 > 0:
+                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-3] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] - 2
                     move = Move(squarefrom, to)
                     move.castle = True
@@ -106,8 +106,8 @@ class Move:
                     move.castle = True
                     moves.append(move)
             # Long castle
-            if board.blackcastleright[1] and squarefrom[1] - 2 > 0:
-                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE:
+            if board.blackcastleright[1] and squarefrom[1] - 3 > 0:
+                if board.pieces[squarefrom[0]][squarefrom[1]-1] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-2] == Piece.NONE and board.pieces[squarefrom[0]][squarefrom[1]-3] == Piece.NONE:
                     to = squarefrom[0], squarefrom[1] - 2
                     move = Move(squarefrom, to)
                     move.castle = True
@@ -163,28 +163,38 @@ class Move:
                     move.enpassant = True
                     moves.append(move)
 
+        prommoves = []
+
         # Promotion
         for move in moves:
             if move.squareto[0] == 0 and dir == -1:
                 move.promotion = Piece.QUEEN | Piece.WHITE
-                moven = Move(move.squarefrom, move.squareto)
-                moven.promotion = Piece.KNIGHT | Piece.WHITE
-                moveb = Move(move.squarefrom, move.squareto)
-                moveb.promotion = Piece.BISHOP | Piece.WHITE
-                mover = Move(move.squarefrom, move.squareto)
-                mover.promotion = Piece.ROOK | Piece.WHITE
+                movenw = Move(move.squarefrom, move.squareto)
+                movenw.promotion = Piece.KNIGHT | Piece.WHITE
+                prommoves.append(movenw)
+                movebw = Move(move.squarefrom, move.squareto)
+                movebw.promotion = Piece.BISHOP | Piece.WHITE
+                prommoves.append(movebw)
+                moverw = Move(move.squarefrom, move.squareto)
+                moverw.promotion = Piece.ROOK | Piece.WHITE
+                prommoves.append(moverw)
+                
+                
 
             elif move.squareto[0] == 7 and dir == 1:
                 move.promotion = Piece.QUEEN | Piece.BLACK
-                moven = Move(move.squarefrom, move.squareto)
-                moven.promotion = Piece.KNIGHT | Piece.BLACK
-                moveb = Move(move.squarefrom, move.squareto)
-                moveb.promotion = Piece.BISHOP | Piece.BLACK
-                mover = Move(move.squarefrom, move.squareto)
-                mover.promotion = Piece.ROOK | Piece.BLACK
+                movenb = Move(move.squarefrom, move.squareto)
+                movenb.promotion = Piece.KNIGHT | Piece.BLACK
+                prommoves.append(movenb)
+                movebb = Move(move.squarefrom, move.squareto)
+                movebb.promotion = Piece.BISHOP | Piece.BLACK
+                prommoves.append(movebb)
+                moverb = Move(move.squarefrom, move.squareto)
+                moverb.promotion = Piece.ROOK | Piece.BLACK
+                prommoves.append(moverb)
         
 
-        return moves
+        return moves + prommoves
 
     def generateMoves(squarefrom, board):
 
@@ -250,7 +260,14 @@ class Move:
         return file + rank
 
     def toString(self):
-        return Move.squareName(self.squarefrom) + Move.squareName(self.squareto)
+        promotion = ""
+
+        if Piece.isType(self.promotion, Piece.QUEEN): promotion = "q"
+        if Piece.isType(self.promotion, Piece.ROOK): promotion = "r"
+        if Piece.isType(self.promotion, Piece.BISHOP): promotion = "b"
+        if Piece.isType(self.promotion, Piece.KNIGHT): promotion = "n"
+
+        return Move.squareName(self.squarefrom) + Move.squareName(self.squareto) + promotion
         
 
     def __init__(self, squarefrom, squareto):

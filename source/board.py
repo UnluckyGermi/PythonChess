@@ -168,7 +168,6 @@ class Board:
 
         # Promotion
         if move.promotion != Piece.NONE:
-            print(move.promotion)
             self.pieces[move.squareto[0]][move.squareto[1]] = move.promotion | Piece.getTeam(piece)
 
         self.checkCastles()
@@ -184,6 +183,8 @@ class Board:
         if self.pieces[7][0] != Piece.ROOK | Piece.WHITE: self.whitecastleright[1] = False
         if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
         if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
+        if self.pieces[7][4] != Piece.KING | Piece.WHITE: self.whitecastleright = [False, False]
+        if self.pieces[0][4] != Piece.KING | Piece.BLACK: self.blackcastleright = [False, False]
 
                 
                 

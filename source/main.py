@@ -4,19 +4,20 @@ from move import Move
 from piece import Piece
 
 STANDARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-TEST_FEN = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
+TEST_FEN = "r3k2r/Pppp1ppp/1b3nbN/nPP5/BB2P3/q4N2/Pp1P2PP/R2Q1RK1 b kq - 0 1"
 
-DEPTH = 3
+DEPTH = 2
 
 b = Board.fromFen(TEST_FEN)
 
+nodes = 0
 
 outF = open("perft.txt", "w")
 
 
 def generateMoves(depth, board):
     
-    global outF, DEPTH
+    global outF, DEPTH, nodes
     counter = 0
 
     if depth == 0: return 1
@@ -25,14 +26,20 @@ def generateMoves(depth, board):
         
         newboard = board.newBoardAfterMove(move)
         counter += generateMoves(depth - 1, newboard)
+        nodes += counter
+        
 
         if depth == DEPTH:
             outF.write(move.toString() + ": " + str(counter) + "\n")
             counter = 0
+        
+        
 
     return counter
 
-print(generateMoves(3, b))
+generateMoves(DEPTH, b)
+
+print(nodes)
 
 outF.close()
 

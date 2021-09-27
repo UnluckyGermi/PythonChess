@@ -4,9 +4,9 @@ from move import Move
 from piece import Piece
 
 STANDARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-TEST_FEN = "r3k2r/Pppp1ppp/1b3nbN/nPP5/BB2P3/q4N2/Pp1P2PP/R2Q1RK1 b kq - 0 1"
+TEST_FEN = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"
 
-DEPTH = 2
+DEPTH = 3
 
 b = Board.fromFen(TEST_FEN)
 
@@ -31,7 +31,8 @@ def generateMoves(depth, board):
 
         if depth == DEPTH:
             outF.write(move.toString() + ": " + str(counter) + "\n")
-            counter = 0
+            
+        counter = 0
         
         
 

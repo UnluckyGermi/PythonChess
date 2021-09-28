@@ -59,48 +59,52 @@ class Interface:
         while True:
             self.surface.fill((0,0,0))
             self.drawBoard(board)
-            for event in game.event.get():
-                if event.type == game.QUIT: sys.exit()
-                elif event.type == game.MOUSEBUTTONDOWN:
-                    pos = self.getPos(game.mouse.get_pos())
 
-                    if event.button == 1:
-                        self.arrow = []
-                        piece = board.pieces[pos[0]][pos[1]]
-                        if piece != Piece.NONE:
-                            self.selectedpiece = pos
-                            if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
-                                for move in Move.generateLegalMoves(self.selectedpiece, board):
-                                    self.moves.append(move)
+            if(board.gamestate == 1):
+                pass
+            else:
+                for event in game.event.get():
+                    if event.type == game.QUIT: sys.exit()
+                    elif event.type == game.MOUSEBUTTONDOWN:
+                        pos = self.getPos(game.mouse.get_pos())
 
-                                    
+                        if event.button == 1:
+                            self.arrow = []
+                            piece = board.pieces[pos[0]][pos[1]]
+                            if piece != Piece.NONE:
+                                self.selectedpiece = pos
+                                if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
+                                    for move in Move.generateLegalMoves(self.selectedpiece, board):
+                                        self.moves.append(move)
 
-                    elif event.button == 3:
-                        self.arrowinit = pos
-                    
-                elif event.type == game.MOUSEBUTTONUP:
-                    pos = self.getPos(game.mouse.get_pos())
-                    if event.button == 1 and self.selectedpiece != None:
-                        if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
-                            
-                            for move in self.moves:
-                                if move.squareto == pos:
-                                    board.makeMove(move)
-                                    
-                                    if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
-                                    else: game.mixer.Sound.play(self.move_sound)
-                    
-                    elif event.button == 3 and self.arrowinit != None:
-                        self.arrow.append((self.arrowinit, pos))
+                                        
 
-                    self.selectedpiece = None
-                    self.moves = []
+                        elif event.button == 3:
+                            self.arrowinit = pos
+                        
+                    elif event.type == game.MOUSEBUTTONUP:
+                        pos = self.getPos(game.mouse.get_pos())
+                        if event.button == 1 and self.selectedpiece != None:
+                            if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
+                                
+                                for move in self.moves:
+                                    if move.squareto == pos:
+                                        board.makeMove(move)
+                                        
+                                        if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
+                                        else: game.mixer.Sound.play(self.move_sound)
+                        
+                        elif event.button == 3 and self.arrowinit != None:
+                            self.arrow.append((self.arrowinit, pos))
 
-                    
+                        self.selectedpiece = None
+                        self.moves = []
+
+                        
 
 
 
-            game.display.flip()
+                game.display.flip()
             
     def loadSprites(self):
         for i in range(12):

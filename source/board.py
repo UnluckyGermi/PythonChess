@@ -25,6 +25,9 @@ class Board:
         # 2 - White wins.
         # 3 - Black wins.
         self.gamestate = 0
+        
+    def equals(self, board):
+        return self.turn == board.turn and self.blackcastleright == board.blackcastleright and self.whitecastleright == board.whitecastleright and self.enpassant == board.enpassant and self.pieces == board.pieces
 
     def fromBoard(board):
         newboard = Board()
@@ -115,21 +118,39 @@ class Board:
                 pos = pos[0], pos[1] + 1
             
             
-        board.checkCastles()
+        board.nextTurn(first=True)
 
         return board
 
 
+    # 0 - Game on.
+    # 1 - Stalemate.
+    # 2 - Repetition draw.
+    # 3 - 50 moves rule draw.
+    # 4 - Not enough Material.
+    # 5 - Checkmate.
     
     def updateGameState(self):
-        if self.inCheck(self.turn):
-            pass
+        if enumerate(Move.allLegalMovesForTeam(self.turn)) == 0:
+            if self.inCheck(self.turn):
+                self.gamestate = 5
+            else:
+                self.gamestate = 1
 
 
+    def nextTurn(self, first=False):
+        if not first:
+            if self.turn == Piece.WHITE: self.turn = Piece.BLACK
+            else: self.turn = Piece.WHITE
 
-    def nextTurn(self):
-        if self.turn == Piece.WHITE: self.turn = Piece.BLACK
-        else: self.turn = Piece.WHITE
+        if self.pieces[7][7] != Piece.ROOK | Piece.WHITE: self.whitecastleright[0] = False
+        if self.pieces[7][0] != Piece.ROOK | Piece.WHITE: self.whitecastleright[1] = False
+        if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
+        if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
+        if self.pieces[7][4] != Piece.KING | Piece.WHITE: self.whitecastleright = [False, False]
+        if self.pieces[0][4] != Piece.KING | Piece.BLACK: self.blackcastleright = [False, False]
+
+        self.updateGameState()
 
     def makeMove(self, move):
 
@@ -173,25 +194,5 @@ class Board:
         if move.promotion != Piece.NONE:
             self.pieces[move.squareto[0]][move.squareto[1]] = move.promotion | Piece.getTeam(piece)
 
-        self.checkCastles()
-
-        
         self.nextTurn()
-
-
-        
-    def checkCastles(self):
-
-        if self.pieces[7][7] != Piece.ROOK | Piece.WHITE: self.whitecastleright[0] = False
-        if self.pieces[7][0] != Piece.ROOK | Piece.WHITE: self.whitecastleright[1] = False
-        if self.pieces[0][7] != Piece.ROOK | Piece.BLACK: self.blackcastleright[0] = False
-        if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
-        if self.pieces[7][4] != Piece.KING | Piece.WHITE: self.whitecastleright = [False, False]
-        if self.pieces[0][4] != Piece.KING | Piece.BLACK: self.blackcastleright = [False, False]
-
-                
-                
-                
-            
-        
 

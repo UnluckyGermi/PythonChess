@@ -8,7 +8,7 @@ TEST_FEN = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 
 
 DEPTH = 3
 
-b = Board.fromFen(TEST_FEN)
+b = Board.fromFen(STANDARD_FEN)
 
 nodes = 0
 
@@ -38,7 +38,7 @@ def generateMoves(depth, board):
 
     return counter
 
-generateMoves(DEPTH, b)
+#generateMoves(DEPTH, b)
 
 print(nodes)
 

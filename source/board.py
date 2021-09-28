@@ -8,6 +8,7 @@ class Board:
     def __init__(self):
 
         self.turn = Piece.WHITE
+        self.moves = []
         
         self.blackcastleright = [True, True]
         self.whitecastleright = [True, True]
@@ -18,6 +19,7 @@ class Board:
         self.enpassant = None
         self.pieces = [[Piece.NONE]*8 for i in range(8)]
 
+        # -1 - Pregame.
         # 0 - Game on.
         # 1 - Draw.
         # 2 - White wins.
@@ -117,11 +119,12 @@ class Board:
 
         return board
 
-    # TODO
-    def gameOver(self):
-        pass
 
     
+    def updateGameState(self):
+        if self.inCheck(self.turn):
+            pass
+
 
 
     def nextTurn(self):

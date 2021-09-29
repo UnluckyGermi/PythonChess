@@ -90,6 +90,7 @@ class Interface:
                                 for move in self.moves:
                                     if move.squareto == pos:
                                         board.makeMove(move)
+                                        board.updateGameState()
                                         
                                         if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
                                         else: game.mixer.Sound.play(self.move_sound)

@@ -131,7 +131,7 @@ class Board:
     # 5 - Checkmate.
     
     def updateGameState(self):
-        if enumerate(Move.allLegalMovesForTeam(self.turn)) == 0:
+        if enumerate(Move.allLegalMovesForTeam(self.turn, self)) == 0:
             if self.inCheck(self.turn):
                 self.gamestate = 5
             else:
@@ -149,8 +149,6 @@ class Board:
         if self.pieces[0][0] != Piece.ROOK | Piece.BLACK: self.blackcastleright[1] = False
         if self.pieces[7][4] != Piece.KING | Piece.WHITE: self.whitecastleright = [False, False]
         if self.pieces[0][4] != Piece.KING | Piece.BLACK: self.blackcastleright = [False, False]
-
-        self.updateGameState()
 
     def makeMove(self, move):
 

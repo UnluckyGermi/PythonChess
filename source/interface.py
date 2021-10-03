@@ -60,8 +60,8 @@ class Interface:
             self.surface.fill((0,0,0))
             self.drawBoard(board)
 
-            if(board.gamestate == 1):
-                pass
+            if(board.gamestate == 5):
+                print("Checkmate!")
             else:
                 for event in game.event.get():
                     if event.type == game.QUIT: sys.exit()
@@ -127,9 +127,6 @@ class Interface:
 
     
     def drawBoard(self, board):
-
-        
-
         for i in range(8):
             for j in range(8):
                 square = i,j

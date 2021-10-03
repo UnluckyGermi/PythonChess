@@ -131,7 +131,7 @@ class Board:
     # 5 - Checkmate.
     
     def updateGameState(self):
-        if enumerate(Move.allLegalMovesForTeam(self.turn, self)) == 0:
+        if len(Move.allLegalMovesForTeam(self.turn, self)) == 0:
             if self.inCheck(self.turn):
                 self.gamestate = 5
             else:

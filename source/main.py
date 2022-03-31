@@ -6,15 +6,6 @@ from piece import Piece
 STANDARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 TEST_FEN = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"
 
-DEPTH = 3
-
-b = Board.fromFen(STANDARD_FEN)
-
-nodes = 0
-
-outF = open("perft.txt", "w")
-
-
 def generateMoves(depth, board):
     
     global outF, DEPTH, nodes
@@ -38,11 +29,8 @@ def generateMoves(depth, board):
 
     return counter
 
-#generateMoves(DEPTH, b)
+if __name__ == "__main__":
 
-print(nodes)
-
-outF.close()
-
-interface = Interface(b)
-interface(b)
+    b = Board.fromFen(STANDARD_FEN)
+    interface = Interface(b)
+    interface(b)

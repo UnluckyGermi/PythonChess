@@ -1,4 +1,4 @@
-from interface import Interface
+from game import Game
 from board import Board
 from move import Move
 from piece import Piece
@@ -32,5 +32,5 @@ def generateMoves(depth, board):
 if __name__ == "__main__":
 
     b = Board.fromFen(STANDARD_FEN)
-    interface = Interface(b)
-    interface(b)
+    game = Game(b)
+    game(b)

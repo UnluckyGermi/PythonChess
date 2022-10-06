@@ -9,7 +9,7 @@ import sys
 from pygame.constants import FULLSCREEN
 
 
-class Interface:
+class Game:
 
     SPRITE_FROM_PIECE = {
                         Piece.KING | Piece.WHITE : 0,
@@ -32,14 +32,14 @@ class Interface:
 
     def __init__(self, b):
 
-        self.ICON = game.transform.smoothscale(game.image.load("assets/icon.ico"), (32, 32))
+        self.ICON = game.transform.smoothscale(game.image.load("../assets/icon.ico"), (32, 32))
         game.init()
         game.mixer.init()
         game.display.set_icon(self.ICON)
         game.display.set_caption("Ajedrez")
 
-        self.move_sound = game.mixer.Sound("assets/sounds/piece_move.wav")
-        self.check_sound = game.mixer.Sound("assets/sounds/piece_check.wav")
+        self.move_sound = game.mixer.Sound("../assets/sounds/piece_move.wav")
+        self.check_sound = game.mixer.Sound("../assets/sounds/piece_check.wav")
         
         self.moves = []
         self.arrow = []
@@ -95,16 +95,11 @@ class Interface:
 
                     self.selectedpiece = None
                     self.moves = []
-
-                    
-
-
-
             game.display.flip()
             
     def loadSprites(self):
         for i in range(12):
-            self.sprites[i] = game.image.load("assets/pieces/" + str(i+1) + ".png")
+            self.sprites[i] = game.image.load("../assets/pieces/" + str(i+1) + ".png")
 
     def drawPieces(self, board):
         for i in range(8):
@@ -112,7 +107,7 @@ class Interface:
                 pos = (self.squaresize*j, self.squaresize*i)
                 piece = board.pieces[i][j]
                 if piece != Piece.NONE:
-                    spritepos = Interface.SPRITE_FROM_PIECE[piece]
+                    spritepos = Game.SPRITE_FROM_PIECE[piece]
                     imgpos = pos
                     if self.selectedpiece == (i,j):
                         imgpos = (game.mouse.get_pos()[0] - self.squaresize/2, game.mouse.get_pos()[1] - self.squaresize/2)
@@ -122,9 +117,6 @@ class Interface:
 
     
     def drawBoard(self, board):
-
-        
-
         for i in range(8):
             for j in range(8):
                 square = i,j

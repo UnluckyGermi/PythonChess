@@ -1,9 +1,10 @@
 from pygame.color import Color
-from board import Board
-from move import Move
-from piece import Piece
+from game.board import Board
+from game.move import Move
+from game.piece import Piece
 import pygame as game
 import sys
+import socket
 
 
 from pygame.constants import FULLSCREEN
@@ -27,11 +28,17 @@ class Game:
                         
 
     def getPos(self, coords):
-        return int(coords[1]/self.squaresize), int(coords[0]/self.squaresize)
+
+        board_coords = int(coords[1]/self.squaresize), int(coords[0]/self.squaresize)
+        if self.color != 0: board_coords = (7 - board_coords[0], 7 - board_coords[1])
+
+        return board_coords
 
 
-    def __init__(self, b):
-
+    def __init__(self, board, color, s):
+        self.s = s
+        self.board = board
+        self.color = color
         self.ICON = game.transform.smoothscale(game.image.load("../assets/icon.ico"), (32, 32))
         game.init()
         game.mixer.init()
@@ -52,13 +59,13 @@ class Game:
         
 
     
-    def __call__(self, board):
+    def __call__(self):
 
         ### BUCLE PRINCIPAL ###
 
         while True:
             self.surface.fill((0,0,0))
-            self.drawBoard(board)
+            self.drawBoard()
             for event in game.event.get():
                 if event.type == game.QUIT: sys.exit()
                 elif event.type == game.MOUSEBUTTONDOWN:
@@ -66,13 +73,17 @@ class Game:
 
                     if event.button == 1:
                         self.arrow = []
-                        piece = board.pieces[pos[0]][pos[1]]
+                        piece = self.board.pieces[pos[0]][pos[1]]
+
                         if piece != Piece.NONE:
                             self.selectedpiece = pos
-                            if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
-                                for move in Move.generateLegalMoves(self.selectedpiece, board):
-                                    self.moves.append(move)
-
+                            if not ((Piece.isTeam(piece, Piece.WHITE) and self.color == 0) or (Piece.isTeam(piece, Piece.BLACK) and self.color == 1)):
+                                continue
+                            try:
+                                if(Piece.isTeam(self.board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], self.board.turn)):
+                                    for move in Move.generateLegalMoves(self.selectedpiece, self.board):
+                                        self.moves.append(move)
+                            except: continue
                                     
 
                     elif event.button == 3:
@@ -81,45 +92,55 @@ class Game:
                 elif event.type == game.MOUSEBUTTONUP:
                     pos = self.getPos(game.mouse.get_pos())
                     if event.button == 1 and self.selectedpiece != None:
-                        if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
-                            
-                            for move in self.moves:
-                                if move.squareto == pos:
-                                    board.makeMove(move)
-                                    
-                                    if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
-                                    else: game.mixer.Sound.play(self.move_sound)
-                    
+                        try:
+
+                            if Piece.isTeam(self.board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], self.board.turn):
+                                for move in self.moves:
+                                    if move.squareto == pos:
+                                        self.board.makeMove(move)
+                                        self.s.send(move.toString().encode())
+                                        
+                                        if self.board.inCheck(self.board.turn): game.mixer.Sound.play(self.check_sound)
+                                        else: game.mixer.Sound.play(self.move_sound)
+                        except: continue
                     elif event.button == 3 and self.arrowinit != None:
                         self.arrow.append((self.arrowinit, pos))
 
                     self.selectedpiece = None
                     self.moves = []
+            
             game.display.flip()
             
     def loadSprites(self):
         for i in range(12):
             self.sprites[i] = game.image.load("../assets/pieces/" + str(i+1) + ".png")
 
-    def drawPieces(self, board):
+    def drawPieces(self):
         for i in range(8):
             for j in range(8):
+                piece = self.board.pieces[i][j]
+                if self.color != 0:
+                    piece = self.board.pieces[7-i][7-j]
                 pos = (self.squaresize*j, self.squaresize*i)
-                piece = board.pieces[i][j]
+            
                 if piece != Piece.NONE:
                     spritepos = Game.SPRITE_FROM_PIECE[piece]
                     imgpos = pos
-                    if self.selectedpiece == (i,j):
+                    
+                    if (self.selectedpiece == (i,j) and self.color == 0) or (self.selectedpiece == (7-i, 7-j) and self.color == 1):
                         imgpos = (game.mouse.get_pos()[0] - self.squaresize/2, game.mouse.get_pos()[1] - self.squaresize/2)
 
                     sprite = game.transform.smoothscale(self.sprites[spritepos], (self.squaresize, self.squaresize))                    
                     self.surface.blit(sprite, imgpos, area=None)
 
     
-    def drawBoard(self, board):
+    def drawBoard(self):
         for i in range(8):
             for j in range(8):
                 square = i,j
+
+                if self.color != 0: square = (7 - i, 7 - j)
+
                 pos = (self.squaresize*j, self.squaresize*i)
                 color = (99, 83, 72)
                 
@@ -157,5 +178,5 @@ class Game:
             #game.draw.polygon(self.surface, (0,0,0), ((endpos[0] + oppdir[0], endpos[1] + oppdir[1]*100), (endpos[0] - oppdir[0], endpos[1] - oppdir[1]*100), (endpos[0] + dir[0]*100, endpos[1] + dir[1]*100)))
             #game.draw.polygon(self.surface, (0, 0, 0), ((start), (startpos[0] + 10*dir[0], startpos[1] - 10*dir[1]), (endpos), (endpos[0] + 10*dir[0], endpos[1] - 10*dir[1])))
             
-        self.drawPieces(board)
+        self.drawPieces()
 

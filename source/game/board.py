@@ -1,12 +1,12 @@
 
 import plistlib
-from piece import Piece
-from move import Move
+from game.piece import Piece
+from game.move import Move
 
 class Board:
 
     def __init__(self):
-
+        
         self.turn = Piece.WHITE
         self.moves = []
         

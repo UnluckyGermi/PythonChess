@@ -1,4 +1,4 @@
-from piece import Piece
+from game.piece import Piece
 
 class Move:
     
@@ -259,6 +259,29 @@ class Move:
 
         return file + rank
 
+    def squareFromName(square_str):
+        squarefile_str = square_str[0]
+        squarerank_str = square_str[1]
+
+        rank = 8 - int(squarerank_str)
+        file = ord(squarefile_str) - (ord('a'))
+
+        return (rank, file)
+
+
+    def fromString(move_str):
+        squarefrom_str = move_str[:2]
+        squareto_str = move_str[2:4]
+
+        squarefrom = Move.squareFromName(squarefrom_str)
+        squareto = Move.squareFromName(squareto_str)
+
+        if len(move_str) > 4:
+            return Move(squarefrom, squareto, promotion=Piece.pieceTypeFromChar(move_str[4]))
+            
+        return Move(squarefrom, squareto)
+
+    
     def toString(self):
         promotion = ""
 
@@ -270,13 +293,13 @@ class Move:
         return Move.squareName(self.squarefrom) + Move.squareName(self.squareto) + promotion
         
 
-    def __init__(self, squarefrom, squareto):
+    def __init__(self, squarefrom, squareto, promotion=Piece.NONE):
         self.squarefrom = squarefrom
         self.squareto = squareto
         self.castle = False
         self.pawnmovedtwo = None
         self.enpassant = False
-        self.promotion = Piece.NONE
+        self.promotion = promotion
 
     
     

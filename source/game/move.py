@@ -273,33 +273,36 @@ class Move:
         squarefrom_str = move_str[:2]
         squareto_str = move_str[2:4]
 
+        print(move_str)
         squarefrom = Move.squareFromName(squarefrom_str)
         squareto = Move.squareFromName(squareto_str)
+        castle = False
+        promotion = Piece.NONE
 
-        if len(move_str) > 4:
-            return Move(squarefrom, squareto, promotion=Piece.pieceTypeFromChar(move_str[4]))
-            
-        return Move(squarefrom, squareto)
+        if move_str[4] != "-": promotion = move_str[4]
+        if move_str[5] != "-": castle = True
+        
+        return Move(squarefrom, squareto, promotion=promotion, castle=castle)
 
     
     def toString(self):
-        promotion = ""
+        promotion = "-"
+        castle = "-"
 
         if Piece.isType(self.promotion, Piece.QUEEN): promotion = "q"
         if Piece.isType(self.promotion, Piece.ROOK): promotion = "r"
         if Piece.isType(self.promotion, Piece.BISHOP): promotion = "b"
         if Piece.isType(self.promotion, Piece.KNIGHT): promotion = "n"
 
-        return Move.squareName(self.squarefrom) + Move.squareName(self.squareto) + promotion
+        if self.castle: castle = "O"
+
+        return f"{Move.squareName(self.squarefrom)}{Move.squareName(self.squareto)}{promotion}{castle}"
         
 
-    def __init__(self, squarefrom, squareto, promotion=Piece.NONE):
+    def __init__(self, squarefrom, squareto, promotion=Piece.NONE, castle=False):
         self.squarefrom = squarefrom
         self.squareto = squareto
-        self.castle = False
+        self.castle = castle
         self.pawnmovedtwo = None
         self.enpassant = False
-        self.promotion = promotion
-
-    
-    
+        self.promotion = promotion   

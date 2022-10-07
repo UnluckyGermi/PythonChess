@@ -43,7 +43,7 @@ if __name__ == "__main__":
     start_new_thread(game, ())
 
     while True:
-        move_str = s.recv(7).decode()
+        move_str = s.recv(9).decode()
         move = Move.fromString(move_str)
         b.makeMove(move)
 

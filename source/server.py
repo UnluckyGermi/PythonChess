@@ -18,8 +18,8 @@ def game(conn1, conn2):
     conn2.send("b".encode())
 
     while True:
-        conn2.send(conn1.recv(7))
-        conn1.send(conn2.recv(7))
+        conn2.send(conn1.recv(9))
+        conn1.send(conn2.recv(9))
 
 
 if __name__ == "__main__":

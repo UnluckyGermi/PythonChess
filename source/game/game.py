@@ -66,7 +66,6 @@ class Game:
 
         while True:
             clock.tick(60)
-            game.event.pump()
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():
@@ -113,6 +112,7 @@ class Game:
                     self.moves = []
             
             game.display.flip()
+            game.event.pump()
             
     def loadSprites(self):
         for i in range(12):

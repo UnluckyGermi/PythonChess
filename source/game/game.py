@@ -54,7 +54,7 @@ class Game:
         self.selectedpiece = Piece.NONE
         self.sprites = [None] * 12
         self.squaresize = 80
-        self.surface = game.display.set_mode((self.squaresize*8, self.squaresize*8), vsync=1)
+        self.surface = game.display.set_mode((self.squaresize*8, self.squaresize*8))
         self.loadSprites()
         
 
@@ -69,7 +69,7 @@ class Game:
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():
-                if event.type == game.QUIT: sys.exit()
+                if event.type == game.QUIT: sys.exit(0)
                 elif event.type == game.MOUSEBUTTONDOWN:
                     pos = self.getPos(game.mouse.get_pos())
 

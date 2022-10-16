@@ -62,10 +62,11 @@ class Game:
     def __call__(self):
 
         ### BUCLE PRINCIPAL ###
+        clock = game.time.Clock()
 
         while True:
             game.event.pump()
-
+            clock.tick(10)
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():

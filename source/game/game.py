@@ -64,7 +64,6 @@ class Game:
         ### BUCLE PRINCIPAL ###
 
         while True:
-            clock.tick(10)
             pygame.event.pump()
 
             self.surface.fill((0,0,0))

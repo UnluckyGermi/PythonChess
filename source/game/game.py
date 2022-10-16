@@ -65,8 +65,8 @@ class Game:
         clock = game.time.Clock()
 
         while True:
+            clock.tick(60)
             game.event.pump()
-            clock.tick(10)
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():

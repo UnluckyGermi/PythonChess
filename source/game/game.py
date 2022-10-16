@@ -64,7 +64,7 @@ class Game:
         ### BUCLE PRINCIPAL ###
 
         while True:
-            pygame.event.pump()
+            game.event.pump()
 
             self.surface.fill((0,0,0))
             self.drawBoard()

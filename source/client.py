@@ -32,6 +32,8 @@ if __name__ == "__main__":
     server = (SERVER_IP, SERVER_PORT)
     conn = s.connect(server)
 
+    print("Conectado!")
+
 
     team = s.recv(1).decode()
 

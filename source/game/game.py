@@ -67,7 +67,10 @@ class Game:
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():
-                if event.type == game.QUIT: sys.exit()
+                if event.type == game.QUIT:
+                    game.display.quit()
+                    game.quit()
+                    sys.exit()
                 elif event.type == game.MOUSEBUTTONDOWN:
                     pos = self.getPos(game.mouse.get_pos())
 

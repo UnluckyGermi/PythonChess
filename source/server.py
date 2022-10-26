@@ -28,17 +28,19 @@ if __name__ == "__main__":
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((IP, PORT))
-    s.listen(5)
 
-    print("Esperando a jugador 1...")
-    conn1, addr1 = s.accept()
-    print("Jugador 1: ", addr1)
+    while True:
+        s.listen(2)
 
-    print("Esperando a jugador 2...")
-    conn2, addr2 = s.accept()
-    print("Jugador 2: ", addr2)
+        print("Esperando a jugador 1...")
+        conn1, addr1 = s.accept()
+        print("Jugador 1: ", addr1)
 
-    print("\nEmpezando partida...")
-    game(conn1, conn2)
-    s.close()
+        print("Esperando a jugador 2...")
+        conn2, addr2 = s.accept()
+        print("Jugador 2: ", addr2)
+
+        print("\nEmpezando partida...")
+        start_new_thread(game, (conn1, conn2))
+
     

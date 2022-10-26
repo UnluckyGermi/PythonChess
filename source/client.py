@@ -19,7 +19,13 @@ def parse_args():
             exit(1)
 
         SERVER_IP = sys.argv[idx+1]
-        
+
+def connectionAlive(b, s):
+    while True:
+        move_str = s.recv(9).decode()
+        move = Move.fromString(move_str)
+        b.makeMove(move)
+
 if __name__ == "__main__":
     print("-- PYTHON CHESS --")
     print("Conectando al servidor...")
@@ -44,11 +50,10 @@ if __name__ == "__main__":
         print("Juegas con NEGRAS")
         game = Game(b, 1, s)
         
-    start_new_thread(game, ())
+    start_new_thread(connectionAlive, (b, s))
 
-    while True:
-        move_str = s.recv(9).decode()
-        move = Move.fromString(move_str)
-        b.makeMove(move)
+    game()
+
+
 
 

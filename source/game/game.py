@@ -1,3 +1,4 @@
+from pygame.locals import *
 from pygame.color import Color
 from game.board import Board
 from game.move import Move
@@ -67,7 +68,7 @@ class Game:
             self.surface.fill((0,0,0))
             self.drawBoard()
             for event in game.event.get():
-                if event.type == game.QUIT:
+                if event.type == QUIT:
                     game.display.quit()
                     game.quit()
                     sys.exit()
@@ -113,6 +114,7 @@ class Game:
                     self.moves = []
             
             game.display.flip()
+            game.event.pump()
             
     def loadSprites(self):
         for i in range(12):

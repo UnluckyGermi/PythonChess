@@ -32,16 +32,18 @@ if __name__ == "__main__":
     server = (SERVER_IP, SERVER_PORT)
     conn = s.connect(server)
 
-    print("Conectado!")
-
+    print("¡Conectado!")
 
     team = s.recv(1).decode()
 
+
     if team == 'w':
+        print("Juegas con BLANCAS")
         game = Game(b, 0, s)
     else:
+        print("Juegas con NEGRAS")
         game = Game(b, 1, s)
-
+        
     start_new_thread(game, ())
 
     while True:

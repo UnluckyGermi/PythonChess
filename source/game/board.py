@@ -19,12 +19,8 @@ class Board:
         self.enpassant = None
         self.pieces = [[Piece.NONE]*8 for i in range(8)]
 
-        # -1 - Pregame.
-        # 0 - Game on.
-        # 1 - Draw.
-        # 2 - White wins.
-        # 3 - Black wins.
-        self.gamestate = 0
+        self.finished = False
+        self.winner = None
 
     def fromBoard(board):
         newboard = Board()
@@ -118,13 +114,16 @@ class Board:
         board.checkCastles()
 
         return board
-
-
     
     def updateGameState(self):
-        if self.inCheck(self.turn):
-            pass
-
+        if len(Move.allLegalMovesForTeam(self.turn)) == 0:
+            if self.inCheck(self.turn):
+                self.finished = True    
+                self.winner = self.turn ^ 24
+                return
+            
+            self.finished = True
+            self.winner = 0
 
 
     def nextTurn(self):
@@ -173,13 +172,10 @@ class Board:
         if move.promotion != Piece.NONE:
             self.pieces[move.squareto[0]][move.squareto[1]] = move.promotion | Piece.getTeam(piece)
 
-        self.checkCastles()
-
-        
+        self.checkCastles()  
         self.nextTurn()
+        self.updateGameState()
 
-
-        
     def checkCastles(self):
 
         if self.pieces[7][7] != Piece.ROOK | Piece.WHITE: self.whitecastleright[0] = False

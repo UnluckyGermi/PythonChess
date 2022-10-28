@@ -7,9 +7,7 @@ import pygame as game
 import sys
 import socket
 
-
 from pygame.constants import FULLSCREEN
-
 
 class Game:
 
@@ -58,20 +56,22 @@ class Game:
         self.surface = game.display.set_mode((self.squaresize*8, self.squaresize*8), vsync=1)
         self.loadSprites()
         
-
+    
     
     def __call__(self):
 
         ### BUCLE PRINCIPAL ###
-
         while True:
             self.surface.fill((0,0,0))
             self.drawBoard()
+
+            if self.board.finished:
+                print("Test")
+                quit()
+
             for event in game.event.get():
                 if event.type == QUIT:
-                    game.display.quit()
-                    game.quit()
-                    sys.exit()
+                    quit()
                 elif event.type == game.MOUSEBUTTONDOWN:
                     pos = self.getPos(game.mouse.get_pos())
 
@@ -115,7 +115,13 @@ class Game:
             
             game.display.flip()
             game.event.pump()
-            
+
+
+    def quit():
+        game.display.quit()
+        game.quit()
+        sys.exit()
+
     def loadSprites(self):
         for i in range(12):
             self.sprites[i] = game.image.load("../assets/pieces/" + str(i+1) + ".png")

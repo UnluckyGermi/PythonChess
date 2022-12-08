@@ -6,32 +6,32 @@ import pygame as game
 import sys
 
 
-from pygame.constants import FULLSCREEN
-
 
 class Interface:
 
     SPRITE_FROM_PIECE = {
-                        Piece.KING | Piece.WHITE : 0,
-                        Piece.QUEEN | Piece.WHITE : 1,
-                        Piece.BISHOP | Piece.WHITE : 2,
-                        Piece.KNIGHT | Piece.WHITE : 3,
-                        Piece.ROOK | Piece.WHITE : 4,
-                        Piece.PAWN | Piece.WHITE : 5,
-                        Piece.KING | Piece.BLACK : 6,
-                        Piece.QUEEN | Piece.BLACK : 7,
-                        Piece.BISHOP | Piece.BLACK : 8,
-                        Piece.KNIGHT | Piece.BLACK : 9,
-                        Piece.ROOK | Piece.BLACK : 10,
-                        Piece.PAWN | Piece.BLACK : 11}
+        Piece.KING | Piece.WHITE : 0,
+        Piece.QUEEN | Piece.WHITE : 1,
+        Piece.BISHOP | Piece.WHITE : 2,
+        Piece.KNIGHT | Piece.WHITE : 3,
+        Piece.ROOK | Piece.WHITE : 4,
+        Piece.PAWN | Piece.WHITE : 5,
+        Piece.KING | Piece.BLACK : 6,
+        Piece.QUEEN | Piece.BLACK : 7,
+        Piece.BISHOP | Piece.BLACK : 8,
+        Piece.KNIGHT | Piece.BLACK : 9,
+        Piece.ROOK | Piece.BLACK : 10,
+        Piece.PAWN | Piece.BLACK : 11
+    }
                         
 
     def getPos(self, coords):
         return int(coords[1]/self.squaresize), int(coords[0]/self.squaresize)
 
 
-    def __init__(self, b):
+    def __init__(self, board):
 
+        self.board = board
         self.ICON = game.transform.smoothscale(game.image.load("assets/icon.ico"), (32, 32))
         game.init()
         game.mixer.init()
@@ -52,15 +52,15 @@ class Interface:
         
 
     
-    def __call__(self, board):
+    def __call__(self):
 
         ### BUCLE PRINCIPAL ###
 
         while True:
             self.surface.fill((0,0,0))
-            self.drawBoard(board)
+            self.drawBoard(self.board)
 
-            if(board.gamestate == 5):
+            if(self.board.gamestate == 5):
                 print("Checkmate!")
             else:
                 for event in game.event.get():
@@ -70,11 +70,11 @@ class Interface:
 
                         if event.button == 1:
                             self.arrow = []
-                            piece = board.pieces[pos[0]][pos[1]]
+                            piece = self.board.pieces[pos[0]][pos[1]]
                             if piece != Piece.NONE:
                                 self.selectedpiece = pos
-                                if(Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn)):
-                                    for move in Move.generateLegalMoves(self.selectedpiece, board):
+                                if(Piece.isTeam(self.board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], self.board.turn)):
+                                    for move in Move.generateLegalMoves(self.selectedpiece, self.board):
                                         self.moves.append(move)
 
                                         
@@ -85,14 +85,14 @@ class Interface:
                     elif event.type == game.MOUSEBUTTONUP:
                         pos = self.getPos(game.mouse.get_pos())
                         if event.button == 1 and self.selectedpiece != None:
-                            if Piece.isTeam(board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], board.turn):
+                            if Piece.isTeam(self.board.pieces[self.selectedpiece[0]][self.selectedpiece[1]], self.board.turn):
                                 
                                 for move in self.moves:
                                     if move.squareto == pos:
-                                        board.makeMove(move)
-                                        board.updateGameState()
+                                        self.board.makeMove(move)
+                                        self.board.updateGameState()
                                         
-                                        if board.inCheck(board.turn): game.mixer.Sound.play(self.check_sound)
+                                        if self.board.inCheck(self.board.turn): game.mixer.Sound.play(self.check_sound)
                                         else: game.mixer.Sound.play(self.move_sound)
                         
                         elif event.button == 3 and self.arrowinit != None:
@@ -100,11 +100,6 @@ class Interface:
 
                         self.selectedpiece = None
                         self.moves = []
-
-                        
-
-
-
                 game.display.flip()
             
     def loadSprites(self):
